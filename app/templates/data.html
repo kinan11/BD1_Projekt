@@ -1,0 +1,28 @@
+{% extends "index.html" %}
+
+{% block header %}
+    <h1>{% block title %}Informacje{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+    <a href="{{ url_for('data', function='1') }}">Spis wszystkich filmów</a><br><br>
+    <a href="{{ url_for('data', function='2') }}">Lista dostępnych kin</a><br><br>
+    <a href="{{ url_for('data', function='3') }}">Menu</a><br><br>
+    {% if show %}
+        <table>
+            <tr>
+                {% for name in names %}
+                    <th>{{ name }}</th>
+                {% endfor %}
+            </tr>
+
+            {% for row in records %}
+                <tr>
+                    {% for element in row %}
+                        <td>{{ element }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

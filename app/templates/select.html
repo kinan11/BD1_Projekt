@@ -1,0 +1,28 @@
+{% extends "index.html" %}
+
+{% block header %}
+  <h1>{% block title %}nazwa tabeli: {{form.__class__.__name__}}{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<table>
+    <tr>
+        <th>ID</th>
+        {% for field in form %}
+            {% if field.type != 'CSRFTokenField' and field.name != 'submit' %}
+                <th>{{ field.label() }}</th>
+            {% endif %}
+        {% endfor %}
+    </tr>
+
+    {% for row in records %}
+        <tr>
+            {% for element in row %}
+                <td>{{ element }}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "repertuar.html" %}
+
+{% block content %}
+
+    <table>
+            <tr>
+                {% for name in names %}
+                    <th>{{ name }}</th>
+                {% endfor %}
+            </tr>
+
+            {% for row in records %}
+                <tr>
+                    {% for element in row %}
+                        <td>{{ element }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+
+
+{% endblock %}
