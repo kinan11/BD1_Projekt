@@ -40,7 +40,6 @@ def select_all(table):
         conn = psycopg2.connect(DB_URL)
         with conn:
             with conn.cursor() as cursor:
-               # cursor.execute("set search_path to wiezienie;")
                 cursor.execute(f"SELECT * from {table};")
                 records = cursor.fetchall()
         return records
@@ -64,22 +63,31 @@ def is_filled(data):
 def insert(table, form):
     names = []
     values = []
+    pow = 'ok'
     for field in form:
         if is_filled(field.data) and field.name not in ["submit","csrf_token"]:
             names.append(field.name)
             values.append("'" + str(field.data) + "'")
-    names = ",".join(names)
-    values = ",".join(values)
-    pow = 'ok'
     try:
         conn = psycopg2.connect(DB_URL)
         with conn:
             with conn.cursor() as cursor:
+
+                if table == "Film":
+                    cursor.execute(f"SELECT sprawdz_rezyser({values[0]}, {values[1]});")
+                    id = cursor.fetchone()[0]
+                    values[0] = "'" + str(id) + "'"
+                    names[0] = 'id_rezyser'
+                    names.pop(1)
+                    values.pop(1)
+
+
+                names = ",".join(names)
+                values = ",".join(values)
                 cursor.execute(f"INSERT INTO {table}({names}) VALUES ({values});")
     except (Exception, psycopg2.Error) as error:
         print ("Error while fetching data from PostgreSQL", error)
         pow = error
-        #flash('Dodanie nie powiodło się!', error)
     finally:
         conn.close()
         print("conn closed")
@@ -115,9 +123,9 @@ def handling_forms(form, form_name):
         tmp = select_all("Kino")
         form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
 
-    if form_name == "Film":
-        tmp = select_all("Rezyser")
-        form.id_rezyser.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
+    # if form_name == "Film":
+    #     tmp = select_all("Rezyser")
+    #     form.id_rezyser.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
 
     if form_name == "wizyta":
         tmp = select_all("termin")

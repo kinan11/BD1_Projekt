@@ -60,11 +60,11 @@ VALUES (1, 'Spider-Man: Bez drogi do domu', 8.2, 2021, 148),
 (2, 'Speed Racer', 7.1, 2008, 135);
 
 
-INSERT INTO Rezyser (id_rezyser, imie, nazwisko)
-VALUES (1,'Jon', 'Watts'),
-(2,'Lana', 'Wachowski'),
-(3,'Samuel', 'Tourneux'),
-(4, 'Ridley', 'Scott');
+INSERT INTO Rezyser (imie, nazwisko)
+VALUES ('Jon', 'Watts'),
+('Lana', 'Wachowski'),
+('Samuel', 'Tourneux'),
+('Ridley', 'Scott');
 
 INSERT INTO Seans (id_seans, id_film, id_sala, id_kino, data, godzina, cena, liczba_miejsc)
 VALUES (1,1,2,1, '2021-02-01', '17:00:00', 20, 10),

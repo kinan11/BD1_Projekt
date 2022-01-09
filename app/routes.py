@@ -17,8 +17,7 @@ def add(form_name):
 
     if form_name == 'none':
         return redirect(url_for('select_form', function='add'))
-    
-    #to be implemented
+
     form = Forms[form_name]
 
     handling_forms(form,form_name)

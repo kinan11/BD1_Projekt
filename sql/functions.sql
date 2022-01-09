@@ -47,3 +47,24 @@ LANGUAGE plpgsql;
 CREATE TRIGGER tr_sprawdz_film
 BEFORE INSERT OR UPDATE ON Film
 FOR EACH ROW EXECUTE PROCEDURE sprawdz_film();
+
+CREATE OR REPLACE FUNCTION sprawdz_rezyser ( rez_imie VARCHAR, rez_nazwisko VARCHAR)
+RETURNS INTEGER AS
+$$
+DECLARE
+    id INTEGER;
+BEGIN
+    id= (SELECT id_rezyser FROM Rezyser WHERE imie= rez_imie AND nazwisko = rez_nazwisko);
+    IF id IS NOT NULL
+        THEN RETURN id;
+    ELSE
+        INSERT INTO Rezyser (imie, nazwisko) VALUES (rez_imie, rez_nazwisko);
+        id = (SELECT MAX(id_rezyser) FROM Rezyser);
+    END IF;
+    RETURN id;
+END;
+$$
+LANGUAGE plpgsql;
+
+
+

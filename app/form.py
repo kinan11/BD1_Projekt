@@ -29,7 +29,8 @@ class rezyser(FlaskForm):
     submit = SubmitField("Dodaj")
 
 class film(FlaskForm):
-    id_rezyser = SelectField("Reżyser",coerce=int, validators=[InputRequired()])
+    imie_rez = StringField("Imię reżysera", validators=[InputRequired()])
+    Nazwisko_rez = StringField("Nazwisko reżysera", validators=[InputRequired()])
     tytul = StringField("Tytuł", validators=[InputRequired()])
     rok = IntegerField("Rok produkcji", validators=[InputRequired()])
     czas = IntegerField("Czas trwania (w minutach)", validators=[InputRequired()])
