@@ -2,8 +2,8 @@ import os
 import urllib.parse as up
 import psycopg2
 from app.form import *
+from flask import flash
 
-#DB_URL = "postgres://gvenvzai:Ai4So0-MbWLPhHtyT6sstL9p_qlTrybY@kandula.db.elephantsql.com:5432/gvenvzai"
 DB_URL = "postgres://miwsxyxa:oeMo_2pOyETz6pJlzspi-CHR7uPbWrPn@castor.db.elephantsql.com:5432/miwsxyxa"
 
 def execute_command(what):
@@ -26,8 +26,6 @@ def myselect(what):
         conn = psycopg2.connect(DB_URL)
         with conn:
             with conn.cursor() as cursor:
-                #cursor.execute("set search_path to wiezienie;")
-                #cursor.execute(f"{what};")
                 cursor.execute(what)
                 records = cursor.fetchall()
         return records
@@ -72,26 +70,27 @@ def insert(table, form):
             values.append("'" + str(field.data) + "'")
     names = ",".join(names)
     values = ",".join(values)
-    #print(names)
-    #print(values)
+    pow = 'ok'
     try:
         conn = psycopg2.connect(DB_URL)
         with conn:
             with conn.cursor() as cursor:
-                #cursor.execute("set search_path to wiezienie;")
                 cursor.execute(f"INSERT INTO {table}({names}) VALUES ({values});")
-                #cursor.execute(f"INSERT INTO Napoje (id_napoje,id_kino, nazwa, cena, ilosc) VALUES (1,1,'sok', 5.50, 30);")
     except (Exception, psycopg2.Error) as error:
         print ("Error while fetching data from PostgreSQL", error)
+        pow = error
+        #flash('Dodanie nie powiodło się!', error)
     finally:
         conn.close()
         print("conn closed")
+        return pow
 
 def Forms_tuple():
     Forms = {
-        "Napoje":napoje(),
-        "Przekaski":przekaski(),
-        # "wizyta":wizyta(),
+        "Napoje": napoje(),
+        "Przekaski": przekaski(),
+        "Rezyser":rezyser(),
+        "Film": film(),
         # "wizytator":wizytator(),
         # "wyrok":wyrok(),
         # "wyrok_wieznia":wyrok_wieznia(),
@@ -108,6 +107,18 @@ def Forms_tuple():
     return Forms
 
 def handling_forms(form, form_name):
+    if form_name == "Napoje":
+        tmp = select_all("Kino")
+        form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
+
+    if form_name == "Przekaski":
+        tmp = select_all("Kino")
+        form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
+
+    if form_name == "Film":
+        tmp = select_all("Rezyser")
+        form.id_rezyser.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
+
     if form_name == "wizyta":
         tmp = select_all("termin")
         form.id_termin.choices= [(row[0],f"id: {row[0]} ; data: {row[1]}") for row in tmp]
@@ -119,14 +130,6 @@ def handling_forms(form, form_name):
     if form_name == "wykroczenie":
         tmp = select_all("wiezien")
         form.id_wiezien.choices= [(row[0],f"{row[1]} {row[2]}") for row in tmp]
-
-    if form_name == "Napoje":
-        tmp = select_all("Kino")
-        form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
-
-    if form_name == "Przekąski":
-        tmp = select_all("Kino")
-        form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
 
     if form_name == "wyrok_wieznia":
         tmp = select_all("wyrok")

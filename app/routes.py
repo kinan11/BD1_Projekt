@@ -23,13 +23,15 @@ def add(form_name):
 
     handling_forms(form,form_name)
     if form.is_submitted():
-        insert(form_name,form)
-        flash('Dodanie powiodło się!')
+        pow=insert(form_name,form)
+        if pow=='ok':
+            flash('Dodanie powiodło się!')
+        else:
+            flash('Dodanie nie powiodło się: '+ str(pow).split('CONTEXT')[0])
         return redirect(url_for('index'))
 
     return render_template('form.html', form = form)
 
-#printing table "form_name"
 @app.route('/select/<form_name>', methods=["GET", "POST"])
 def select(form_name):
     Forms = Forms_tuple()
@@ -41,8 +43,7 @@ def select(form_name):
     records = select_all(form_name)
 
     return render_template('select.html', form = form, records= records)
-    
-#selecting table to add/select        
+
 @app.route('/select_form/<function>', methods=["GET", "POST"])
 def select_form(function):
     form = select_table()
@@ -64,8 +65,8 @@ def data(function=0):
         show = True
 
         if function == '1':
-            names = ['Tytuł','Reżyser','Ocena']
-            records =myselect("SELECT tytul,imie||' '||nazwisko, ocena FROM Film JOIN Rezyser ON Film.id_rezyser=Rezyser.id_rezyser")
+            names = ['Tytuł','Reżyser','Rok produkcji', 'Czas trwania [m]', 'Ocena']
+            records =myselect("SELECT tytul,imie||' '||nazwisko, rok, czas, ocena FROM Film JOIN Rezyser ON Film.id_rezyser=Rezyser.id_rezyser")
 
         if function == '2':
             names = ['Nazwa', 'Miasto', 'Liczba sal']

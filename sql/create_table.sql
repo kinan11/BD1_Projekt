@@ -1,13 +1,13 @@
 
 CREATE TABLE public.Bilet (
-                id_bilet INTEGER NOT NULL,
+                id_bilet BIGSERIAL NOT NULL,
                 opis VARCHAR NOT NULL,
                 CONSTRAINT id_bilet PRIMARY KEY (id_bilet)
 );
 
 
 CREATE TABLE public.Osoba (
-                id_osoba INTEGER NOT NULL,
+                id_osoba BIGSERIAL NOT NULL,
                 login VARCHAR NOT NULL,
                 email VARCHAR NOT NULL,
                 haslo VARCHAR NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE public.Osoba (
 
 
 CREATE TABLE public.Rezyser (
-                id_rezyser INTEGER NOT NULL,
+                id_rezyser BIGSERIAL NOT NULL,
                 imie VARCHAR NOT NULL,
                 nazwisko VARCHAR NOT NULL,
                 CONSTRAINT id_rezyser PRIMARY KEY (id_rezyser)
@@ -24,8 +24,10 @@ CREATE TABLE public.Rezyser (
 
 
 CREATE TABLE public.Film (
-                id_film INTEGER NOT NULL,
+                id_film BIGSERIAL NOT NULL,
                 id_rezyser INTEGER NOT NULL,
+                rok INTEGER NOT NULL,
+                czas INTEGER NOT NULL,
                 tytul VARCHAR NOT NULL,
                 ocena DOUBLE PRECISION NOT NULL,
                 CONSTRAINT id_film PRIMARY KEY (id_film)
@@ -33,7 +35,7 @@ CREATE TABLE public.Film (
 
 
 CREATE TABLE public.Kino (
-                id_kino INTEGER NOT NULL,
+                id_kino BIGSERIAL NOT NULL,
                 nazwa VARCHAR NOT NULL,
                 miasto VARCHAR NOT NULL,
                 CONSTRAINT id_kino PRIMARY KEY (id_kino)
@@ -41,27 +43,27 @@ CREATE TABLE public.Kino (
 
 
 CREATE TABLE public.Napoje (
-                id_napoje INTEGER NOT NULL,
+                id_napoje BIGSERIAL NOT NULL,
                 id_kino INTEGER NOT NULL,
                 nazwa VARCHAR NOT NULL,
                 cena DOUBLE PRECISION NOT NULL,
-                ilosc INTEGER NOT NULL,
+                ilosc INTEGER,
                 CONSTRAINT id_napoje PRIMARY KEY (id_napoje)
 );
 
 
 CREATE TABLE public.Przekaski (
-                id_przekaski INTEGER NOT NULL,
+                id_przekaski BIGSERIAL NOT NULL,
                 id_kino INTEGER NOT NULL,
                 nazwa VARCHAR NOT NULL,
                 cena DOUBLE PRECISION NOT NULL,
-                ilosc INTEGER NOT NULL,
+                ilosc INTEGER,
                 CONSTRAINT id_przekaski PRIMARY KEY (id_przekaski)
 );
 
 
 CREATE TABLE public.Sala (
-                id_sala INTEGER NOT NULL,
+                id_sala BIGSERIAL NOT NULL,
                 id_kino INTEGER NOT NULL,
                 numer INTEGER NOT NULL,
                 liczba_miejsc INTEGER NOT NULL,
@@ -70,7 +72,7 @@ CREATE TABLE public.Sala (
 
 
 CREATE TABLE public.Seans (
-                id_seans INTEGER NOT NULL,
+                id_seans BIGSERIAL NOT NULL,
                 id_film INTEGER NOT NULL,
                 id_sala INTEGER NOT NULL,
                 id_kino INTEGER NOT NULL,
@@ -84,7 +86,7 @@ CREATE TABLE public.Seans (
 
 
 CREATE TABLE public.Rezerwacja (
-                id_rezerwacja INTEGER NOT NULL,
+                id_rezerwacja BIGSERIAL NOT NULL,
                 id_napoje INTEGER NOT NULL,
                 id_przekaski INTEGER NOT NULL,
                 id_osoba INTEGER NOT NULL,

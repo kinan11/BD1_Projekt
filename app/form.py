@@ -9,13 +9,6 @@ from wtforms import (
 )
 from wtforms.validators import InputRequired
 
-class wykroczenie(FlaskForm):
-    id_wiezien = SelectField("id_wiezien",coerce=int, validators=[InputRequired()])
-    opis = StringField("Nazwa", validators=[InputRequired()])
-    data = DecimalField("Cena", validators=[InputRequired()])
-    kara = IntegerField("Ilość", validators=[InputRequired()])
-    submit = SubmitField("Dodaj")
-
 class napoje(FlaskForm):
     id_kino = SelectField("Kino",coerce=int, validators=[InputRequired()])
     nazwa = StringField("Nazwa", validators=[InputRequired()])
@@ -29,6 +22,28 @@ class przekaski(FlaskForm):
     cena = DecimalField("Cena", validators=[InputRequired()])
     ilosc = IntegerField("Ilość", validators=[InputRequired()])
     submit = SubmitField("Dodaj")
+
+class rezyser(FlaskForm):
+    imie = StringField("Imię", validators=[InputRequired()])
+    nazwisko = StringField("Nazwisko", validators=[InputRequired()])
+    submit = SubmitField("Dodaj")
+
+class film(FlaskForm):
+    id_rezyser = SelectField("Reżyser",coerce=int, validators=[InputRequired()])
+    tytul = StringField("Tytuł", validators=[InputRequired()])
+    rok = IntegerField("Rok produkcji", validators=[InputRequired()])
+    czas = IntegerField("Czas trwania (w minutach)", validators=[InputRequired()])
+    ocena = DecimalField("Ocena (w skali od 0 do 10)", validators=[InputRequired()])
+    submit = SubmitField("Dodaj")
+
+class wykroczenie(FlaskForm):
+    id_wiezien = SelectField("id_wiezien",coerce=int, validators=[InputRequired()])
+    opis = StringField("Nazwa", validators=[InputRequired()])
+    data = DecimalField("Cena", validators=[InputRequired()])
+    kara = IntegerField("Ilość", validators=[InputRequired()])
+    submit = SubmitField("Dodaj")
+
+
 
 class termin(FlaskForm):
     data = DateField("data (YYYY-MM-DD)", validators=[InputRequired()])
