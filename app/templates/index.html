@@ -14,7 +14,8 @@
             <li><a href="{{ url_for('data') }}">Informacje</a>
             <li><a href="{{ url_for('repertuar') }}">Repertuar</a>
             <li><a href="{{ url_for('add', form_name='none') }}">Dodaj</a>
-            <!--<li><a href="{{ url_for('select', form_name='none') }}">Wyswietl tabele</a>-->
+            <li><a href="{{ url_for('add', form_name='Osoba') }}">Zarejestruj się</a>
+            <li><a href="{{ url_for('rezerwacja') }}">Rezerwuj bilet</a>
             {% endblock %}
         </ul>
     </nav>

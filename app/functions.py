@@ -81,6 +81,18 @@ def insert(table, form):
                     names.pop(1)
                     values.pop(1)
 
+                if table=="Sala":
+                    cursor.execute(f"SELECT spr_sale({values[0]});")
+                    numer = cursor.fetchone()[0]
+                    names.append("numer")
+                    values.append("'" + str(numer) + "'")
+
+                if table=="Seans":
+                    cursor.execute(f"SELECT spr_liczbe_miejsc({values[0]}, {values[1]});")
+                    liczba = cursor.fetchone()[0]
+                    print(values[0])
+                    names.append("liczba_miejsc")
+                    values.append("'" + str(liczba) + "'")
 
                 names = ",".join(names)
                 values = ",".join(values)
@@ -99,7 +111,11 @@ def Forms_tuple():
         "Przekaski": przekaski(),
         "Rezyser":rezyser(),
         "Film": film(),
-        # "wizytator":wizytator(),
+        "Sala":sala(),
+        "Kino": kino(),
+        "Seans": seans(),
+        "Osoba": rejestracja(),
+        "Rezerwacja": rezerwacja(),
         # "wyrok":wyrok(),
         # "wyrok_wieznia":wyrok_wieznia(),
         # "wiezien":wiezien(),
@@ -123,51 +139,38 @@ def handling_forms(form, form_name):
         tmp = select_all("Kino")
         form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
 
-    # if form_name == "Film":
-    #     tmp = select_all("Rezyser")
-    #     form.id_rezyser.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
+    if form_name == "Sala":
+        tmp = select_all("Kino")
+        form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
 
-    if form_name == "wizyta":
-        tmp = select_all("termin")
-        form.id_termin.choices= [(row[0],f"id: {row[0]} ; data: {row[1]}") for row in tmp]
-        tmp = select_all("wiezien")
-        form.id_wiezien.choices= [(row[0],f"id: {row[0]} ; imie: {row[1]}; nazwisko: {row[2]}") for row in tmp]
-        tmp = select_all("wizytator")
-        form.id_wizytator.choices= [(row[0],f"id: {row[0]} ; imie:{row[1]}; nazwisko: {row[2]}") for row in tmp]
-    
-    if form_name == "wykroczenie":
-        tmp = select_all("wiezien")
-        form.id_wiezien.choices= [(row[0],f"{row[1]} {row[2]}") for row in tmp]
+    if form_name == "Seans":
+        tmp = select_all("Kino")
+        form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
+        tmp = select_all("Film")
+        form.id_film.choices = [(row[0], f"{row[4]}") for row in tmp]
 
-    if form_name == "wyrok_wieznia":
-        tmp = select_all("wyrok")
-        form.id_wyrok.choices= [(row[0],f"id: {row[0]} ; nazwa: {row[1]}") for row in tmp]
-        tmp = select_all("wiezien")
-        form.id_wiezien.choices= [(row[0],f"id: {row[0]} ; imie: {row[1]}; nazwisko: {row[2]}") for row in tmp]
+    if form_name == "Seans":
+        tmp = select_all("Kino")
+        form.id_kino.choices = [(row[0], f"{row[1]} {row[2]}") for row in tmp]
+        tmp = select_all("Film")
+        form.id_film.choices = [(row[0], f"{row[4]}") for row in tmp]
 
-    if form_name == "wiezien":
-        tmp = select_all("cela")
-        form.id_cela.choices= [(row[0],f"id: {row[0]} ; id bloku:{row[1]}; numer: {row[2]}") for row in tmp]
+def rezerwuj(form, id):
+    tmp = myselect("Select id_seans, tytul, data, godzina, cena FROM Seans JOIN Film ON film.id_film = Seans.id_film WHERE id_kino = "+id+";")
+    form.id_seans.choices = [(row[0], f"{row[1]} DATA: {row[2]} GODZINA: {row[3]} CENA: {row[4]}zł") for row in tmp]
+    tmp = myselect("SELECT * FROM Osoba ;")
+    form.id_osoba.choices = [(row[0], f"{row[1]}") for row in tmp]
+    tmp = myselect("SELECT * FROM Bilet ;")
+    form.id_bilet.choices = [(row[0], f"{row[1]}") for row in tmp]
+    tmp = tmp = myselect("Select id_napoje,nazwa FROM Napoje WHERE id_kino= "+id+";")
+    form.id_napoje.choices = [(row[0], f"{row[1]}") for row in tmp]
+    tmp = tmp = myselect("Select id_przekaski,nazwa FROM Przekaski WHERE id_kino= " + id + ";")
+    form.id_przekaski.choices = [(row[0], f"{row[1]}") for row in tmp]
 
-    if form_name == "praca_wieznia":
-        tmp = select_all("wiezien")
-        form.id_wiezien.choices= [(row[0],f"id: {row[0]} ; imie: {row[1]}; nazwisko: {row[2]}") for row in tmp]
-        tmp = select_all("praca")
-        form.id_praca.choices= [(row[0],f"id: {row[0]} ; opis: {row[1]}") for row in tmp]
-    
-    if form_name == "cela":
-        tmp = select_all("blok")
-        form.id_blok.choices= [(row[0],f"id: {row[0]} ; id bloku: {row[1]}") for row in tmp]
 
-    if form_name == "pomieszczenie":
-        tmp = select_all("blok")
-        form.id_blok.choices= [(row[0],f"id: {row[0]} ; nazwa bloku: {row[1]}") for row in tmp]
-    
-    if form_name == "pracownik":
-        tmp = select_all("zawod")
-        form.id_zawod.choices= [(row[0],f"id: {row[0]} ; opis: {row[1]}") for row in tmp]
-        tmp = select_all("zmiana")
-        form.id_zmiana.choices= [(row[0],f"id: {row[0]} ; nazwa: {row[1]}") for row in tmp]
-        tmp = select_all("pomieszczenie")
-        form.id_pomieszczenie.choices = [(0,'brak')]+[(row[0],f"id: {row[0]} ; id bloku: {row[1]}; numer: {row[2]}") for row in tmp]
+
+
+
+
+
         

@@ -65,7 +65,7 @@ CREATE TABLE public.Przekaski (
 CREATE TABLE public.Sala (
                 id_sala BIGSERIAL NOT NULL,
                 id_kino INTEGER NOT NULL,
-                numer INTEGER NOT NULL,
+                numer INTEGER,
                 liczba_miejsc INTEGER NOT NULL,
                 CONSTRAINT id_sala PRIMARY KEY (id_sala)
 );
@@ -79,7 +79,7 @@ CREATE TABLE public.Seans (
                 data DATE NOT NULL,
                 godzina TIME NOT NULL,
                 cena DOUBLE PRECISION NOT NULL,
-                liczba_miejsc INTEGER NOT NULL,
+                liczba_miejsc INTEGER,
                 CONSTRAINT id_seans PRIMARY KEY (id_seans)
 );
 

@@ -7,13 +7,25 @@
 {% endblock %}
 
 {% block content %}
-<form method="POST" action="">
-    {% for field in form %}
-        {% if field.type != 'CSRFTokenField' and field.name != 'submit' %}
-            {{ field.label() }}
-            {{ field() }}
-        {% endif %}
-    {% endfor %}
-    {{ form.submit }}
-</form>
+    {% if form.__class__.__name__ == "rezerwacja" %}
+        <form method="POST" action="{{ url_for('rez') }}">
+            {% for field in form %}
+            {% if field.type != 'CSRFTokenField' and field.name != 'submit' %}
+                {{ field.label() }}
+                {{ field() }}
+            {% endif %}
+          {% endfor %}
+        {{ form.submit }}
+        </form>
+    {% else %}
+    <form method="POST" action="">
+        {% for field in form %}
+            {% if field.type != 'CSRFTokenField' and field.name != 'submit' %}
+                {{ field.label() }}
+                {{ field() }}
+            {% endif %}
+        {% endfor %}
+        {{ form.submit }}
+    </form>
+ {% endif %}
 {% endblock %}

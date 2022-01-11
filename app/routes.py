@@ -2,6 +2,7 @@ from app import app
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
+from app.form import *
 
 from app.form import *
 from app.functions import *
@@ -21,6 +22,7 @@ def add(form_name):
     form = Forms[form_name]
 
     handling_forms(form,form_name)
+    print(form_name, form)
     if form.is_submitted():
         pow=insert(form_name,form)
         if pow=='ok':
@@ -80,7 +82,6 @@ def data(function=0):
 
 
 @app.route('/repertuar', methods=["GET", "POST"])
-#@app.route('/repertuar/<function>', methods=["GET", "POST"])
 def repertuar():
     show = True
     records = []
@@ -98,3 +99,37 @@ def sel(function=0):
     records = myselect("SELECT tytul, data,godzina FROM Seans JOIN Film ON Film.id_film= Seans.id_film WHERE id_kino="+select+"ORDER BY data, godzina")
 
     return render_template('sel.html', records=records, names=names)
+
+@app.route('/rezerwacja', methods=["GET", "POST"])
+def rezerwacja():
+    show = True
+    records = []
+    records = myselect("SELECT id_kino, nazwa,miasto FROM Kino")
+    names = [[records[i][0], records[i][1] + ' ' + records[i][2]] for i in range(len(records))]
+
+    return render_template('rezerwacja.html', names=names, show=show)
+
+@app.route('/reg', methods=["GET", "POST"])
+def reg():
+    select = request.form.get("sel_kino")
+    Forms = Forms_tuple()
+    form = Forms["Rezerwacja"]
+    rezerwuj(form, select)
+    x = [key for key, value in Forms.items()]
+    print(form)
+    return render_template('form.html', form = form)
+
+@app.route('/rez', methods=["GET", "POST"])
+def rez():
+    Forms = Forms_tuple()
+    form = Forms["Rezerwacja"]
+    if form.is_submitted():
+        pow=insert("Rezerwacja",form)
+        if pow=='ok':
+            flash('Zarezerwowano!')
+        else:
+            flash('Nie zarezerwowano: '+ str(pow).split('CONTEXT')[0])
+        return redirect(url_for('index'))
+
+    return render_template('index')
+
