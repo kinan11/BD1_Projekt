@@ -11,11 +11,22 @@
         <h1>Kinga Miszczak - Projekt</h1>
         <ul>
             {% block links %}
+
             <li><a href="{{ url_for('data') }}">Informacje</a>
             <li><a href="{{ url_for('repertuar') }}">Repertuar</a>
+            {% if session['username']=='admin' %}
             <li><a href="{{ url_for('add', form_name='none') }}">Dodaj</a>
-            <li><a href="{{ url_for('add', form_name='Osoba') }}">Zarejestruj się</a>
+            {% endif %}
+            {% if not session['username'] %}
+            <li><a href="{{ url_for('login') }}">Zaloguj się</a>
+            {% endif %}
+            {% if session['username'] and session['username']!='admin'%}
             <li><a href="{{ url_for('rezerwacja') }}">Rezerwuj bilet</a>
+            <li><a href="{{ url_for('bilet') }}">Moje rezerwacje</a>
+                {% endif %}
+                {% if session['username'] %}
+            <li><a href="{{ url_for('wyloguj') }}">Wyloguj się</a>
+                {% endif %}
             {% endblock %}
         </ul>
     </nav>
@@ -23,7 +34,7 @@
         <header>
             {% block header %}{% endblock %}
         </header>
-        {% if message %} <h2>{{message}}<h2> {% endif %}
+        {% if message %} <h2>{{message}}</h2> {% endif %}
         {% for message in get_flashed_messages() %}
             <div class="flash">{{ message }}</div>
         {% endfor %}

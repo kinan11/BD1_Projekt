@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block header %}
-    <h1>{% block title %}Repertuar{% endblock %}</h1>
+    <h1>{% block title %}Repertuar {{session['username']}}{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}

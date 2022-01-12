@@ -6,9 +6,13 @@ from app.form import *
 
 from app.form import *
 from app.functions import *
+DB_URL = "postgres://miwsxyxa:oeMo_2pOyETz6pJlzspi-CHR7uPbWrPn@castor.db.elephantsql.com:5432/miwsxyxa"
 
 @app.route('/')
 def index():
+    if 'loggedin' in session:
+        # User is loggedin show them the home page
+        return render_template('index.html', username=session['username'])
     return render_template('index.html')
 
 #creating form to add row into the table "form_name"
@@ -58,7 +62,7 @@ def select_form(function):
 
 @app.route('/data', methods=["GET", "POST"])  
 @app.route('/data/<function>', methods=["GET", "POST"])
-def data(function=0):
+def data(function=0, username='none'):
     names = []
     show = False
     records = []
@@ -132,4 +136,49 @@ def rez():
         return redirect(url_for('index'))
 
     return render_template('index')
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        password = request.form['password']
+        conn = psycopg2.connect(DB_URL)
+        login = "'" + str(username) + "'"
+        haslo = "'" + str(password) + "'"
+        try:
+            conn = psycopg2.connect(DB_URL)
+            with conn:
+                with conn.cursor() as cursor:
+                    cursor.execute(f"SELECT * FROM Osoba WHERE login = {login} AND haslo = {haslo};")
+                    account = cursor.fetchone()
+                    print(type(account))
+                    if account[0]:
+                         session['loggedin'] = True
+                         session['id'] = account[0]
+                         session['username'] = account[1]
+                         return redirect(url_for('index'))
+                    else:
+                         flash('Incorrect username/password')
+        except (Exception, psycopg2.Error) as error:
+            print("Error while fetching data from PostgreSQL", error)
+        finally:
+            conn.close()
+            print("conn closed")
+
+    return render_template('login.html')
+
+@app.route('/wyloguj/')
+def wyloguj():
+    session.clear()
+    return redirect(url_for('index'))
+
+@app.route('/bilet', methods=["GET", "POST"])
+def bilet():
+    names = []
+    show = False
+    records = []
+    names = ['Film','Kino','Data', 'Godzina', 'Przekaska', 'Napój', 'Bilet', 'Cena']
+    records =myselect("SELECT tytul,Kino.nazwa||' '||miasto,  data, godzina,przekaski.nazwa, napoje.nazwa, opis, rezerwacja.cena FROM Rezerwacja JOIN Napoje ON rezerwacja.id_napoje = Napoje.id_napoje JOIN Przekaski ON Rezerwacja.id_przekaski = Przekaski.id_przekaski JOIN Seans ON Rezerwacja.id_seans = Seans.id_seans JOIN Film ON Seans.id_film = Film.id_film JOIN Kino ON Seans.id_kino = Kino.id_kino JOIN bilet ON Rezerwacja.id_bilet = Bilet.id_bilet WHERE id_osoba = '"+str(session['id'])+"'; ")
+
+    return render_template('bilet.html', records=records, names=names)
 
