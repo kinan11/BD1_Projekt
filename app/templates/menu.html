@@ -1,12 +1,12 @@
 {% extends "index.html" %}
 
 {% block header %}
-    <h1>{% block title %}Repertuar{% endblock %}</h1>
+    <h1>{% block title %}Menu{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-    <form method="POST" action="{{ url_for('sel', function='1') }}">
-        <select name = "sel_rep">
+    <form method="POST" action="{{ url_for('data', function='4') }}">
+        <select name = "menu_form">
             {% for name in names %}
             <option value={{name[0]}}>{{name[1]}}</option>
              {% endfor %}

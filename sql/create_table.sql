@@ -87,11 +87,12 @@ CREATE TABLE public.Seans (
 
 CREATE TABLE public.Rezerwacja (
                 id_rezerwacja BIGSERIAL NOT NULL,
-                id_napoje INTEGER NOT NULL,
-                id_przekaski INTEGER NOT NULL,
+                id_napoje INTEGER,
+                id_przekaski INTEGER,
                 id_osoba INTEGER NOT NULL,
                 id_seans INTEGER NOT NULL,
                 id_bilet INTEGER NOT NULL,
+                cena DOUBLE PRECISION,
                 CONSTRAINT id_rezerwacja PRIMARY KEY (id_rezerwacja)
 );
 

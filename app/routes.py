@@ -54,6 +54,8 @@ def select_form(function):
     form = select_table()
     Forms= Forms_tuple()
     x = [key for key,value in Forms.items()]
+    del x[len(x) - 1]
+    del x[len(x) - 1]
     form.nazwa.choices = x
     if form.is_submitted():
         result = request.form['nazwa']
@@ -62,7 +64,7 @@ def select_form(function):
 
 @app.route('/data', methods=["GET", "POST"])  
 @app.route('/data/<function>', methods=["GET", "POST"])
-def data(function=0, username='none'):
+def data(function=0):
     names = []
     show = False
     records = []
@@ -70,17 +72,28 @@ def data(function=0, username='none'):
         show = True
 
         if function == '1':
-            names = ['Tytuł','Reżyser','Rok produkcji', 'Czas trwania [m]', 'Ocena']
-            records =myselect("SELECT tytul,imie||' '||nazwisko, rok, czas, ocena FROM Film JOIN Rezyser ON Film.id_rezyser=Rezyser.id_rezyser")
+            names = ['Tytuł','Reżyser','Rok produkcji', 'Czas trwania [m]', 'Ocena', 'Liczba dostępnych kin']
+            records = myselect("SELECT * from wszystkie_filmy ORDER BY tytul")
 
         if function == '2':
-            names = ['Nazwa', 'Miasto', 'Liczba sal']
-            records= myselect("SELECT nazwa, miasto,COUNT(id_sala) FROM Kino JOIN Sala ON Kino.id_kino=Sala.id_kino  GROUP BY sala.id_kino, kino.nazwa , kino.miasto ORDER BY nazwa;")
+            names = ['Nazwa', 'Miasto', 'Liczba sal', 'Ilość wyświetlanych filmów']
+            records= myselect("SELECT * from lista_kin ORDER BY miasto")
 
         if function == '3':
+            records = myselect("SELECT * FROM form_kino")
+            names = [[records[i][0], records[i][1] + ' ' + records[i][2]] for i in range(len(records))]
+
+            return render_template('menu.html', names=names, show=show)
+
+        if function == '4':
+            select = request.form.get("menu_form")
             names = ['Nazwa', 'Cena']
-            records = myselect("SELECT nazwa, cena FROM Przekaski ORDER BY nazwa")
-            records += myselect("SELECT nazwa, cena FROM Napoje ORDER BY nazwa")
+            records = myselect("SELECT * FROM bufet_przekaski("+select+")")
+            records += myselect("SELECT * FROM bufet_napoje(" + select + ")")
+
+        if function == '5':
+            names = ['Imię', 'Nazwisko', 'Liczba filmów aktualnie granych w kinach', 'Średnia ocena']
+            records = myselect("SELECT * from rank_rezyser ORDER BY avg DESC")
 
     return render_template('data.html', records=records, names=names, show=show)
 
@@ -89,7 +102,7 @@ def data(function=0, username='none'):
 def repertuar():
     show = True
     records = []
-    records = myselect("SELECT id_kino, nazwa,miasto FROM Kino")
+    records = myselect("SELECT * FROM form_kino")
     names=[[records[i][0],records[i][1]+' '+records[i][2]] for i in range(len(records))]
 
     return render_template('repertuar.html', names=names, show=show)
@@ -100,7 +113,7 @@ def sel(function=0):
     select = request.form.get("sel_rep")
     names = ['Tytuł', 'Data', 'Godzina']
     records = []
-    records = myselect("SELECT tytul, data,godzina FROM Seans JOIN Film ON Film.id_film= Seans.id_film WHERE id_kino="+select+"ORDER BY data, godzina")
+    records = myselect("SELECT * FROM repertuar("+select+")")
 
     return render_template('sel.html', records=records, names=names)
 
@@ -108,7 +121,7 @@ def sel(function=0):
 def rezerwacja():
     show = True
     records = []
-    records = myselect("SELECT id_kino, nazwa,miasto FROM Kino")
+    records = myselect("SELECT * FROM form_kino")
     names = [[records[i][0], records[i][1] + ' ' + records[i][2]] for i in range(len(records))]
 
     return render_template('rezerwacja.html', names=names, show=show)
@@ -120,7 +133,6 @@ def reg():
     form = Forms["Rezerwacja"]
     rezerwuj(form, select)
     x = [key for key, value in Forms.items()]
-    print(form)
     return render_template('form.html', form = form)
 
 @app.route('/rez', methods=["GET", "POST"])
@@ -139,9 +151,9 @@ def rez():
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
-        username = request.form['username']
-        password = request.form['password']
+    if request.method == 'POST' and 'login' in request.form and 'haslo' in request.form:
+        username = request.form['login']
+        password = request.form['haslo']
         conn = psycopg2.connect(DB_URL)
         login = "'" + str(username) + "'"
         haslo = "'" + str(password) + "'"
@@ -178,7 +190,11 @@ def bilet():
     show = False
     records = []
     names = ['Film','Kino','Data', 'Godzina', 'Przekaska', 'Napój', 'Bilet', 'Cena']
-    records =myselect("SELECT tytul,Kino.nazwa||' '||miasto,  data, godzina,przekaski.nazwa, napoje.nazwa, opis, rezerwacja.cena FROM Rezerwacja JOIN Napoje ON rezerwacja.id_napoje = Napoje.id_napoje JOIN Przekaski ON Rezerwacja.id_przekaski = Przekaski.id_przekaski JOIN Seans ON Rezerwacja.id_seans = Seans.id_seans JOIN Film ON Seans.id_film = Film.id_film JOIN Kino ON Seans.id_kino = Kino.id_kino JOIN bilet ON Rezerwacja.id_bilet = Bilet.id_bilet WHERE id_osoba = '"+str(session['id'])+"'; ")
+    records = myselect("SELECT * FROM bilety(" +str(session['id'])+ ")")
+    for i in range(len(records)):
+        for j in range(len(records[i])):
+            if not records[i][j]:
+                print(records[i][j])
 
     return render_template('bilet.html', records=records, names=names)
 

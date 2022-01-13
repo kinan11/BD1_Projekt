@@ -52,7 +52,7 @@ class seans(FlaskForm):
     id_sala = IntegerField("Numer sali", validators=[InputRequired()])
     id_film = SelectField("Film", coerce=int, validators=[InputRequired()])
     data = DateField("data rozpoczecia (YYYY-MM-DD)", validators=[InputRequired()])
-    godzina = TimeField("godzina rozpoczecia (HH-MM)", validators=[InputRequired()])
+    godzina = TimeField("godzina rozpoczecia (HH:MM)", validators=[InputRequired()])
     cena = DecimalField("Cena biletu", validators=[InputRequired()])
     submit = SubmitField("Dodaj")
 
@@ -63,7 +63,6 @@ class rejestracja(FlaskForm):
     submit = SubmitField("Zarejestruj się")
 
 class rezerwacja(FlaskForm):
-    id_osoba = SelectField("Login", coerce=int, validators=[InputRequired()])
     id_seans = SelectField("Seans", coerce=int, validators=[InputRequired()])
     id_bilet = SelectField("Rodzaj biletu", coerce=int, validators=[InputRequired()])
     id_napoje = SelectField("Napój", coerce=int, validators=[InputRequired()])

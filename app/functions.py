@@ -2,7 +2,7 @@ import os
 import urllib.parse as up
 import psycopg2
 from app.form import *
-from flask import flash
+from flask import flash, session
 
 DB_URL = "postgres://miwsxyxa:oeMo_2pOyETz6pJlzspi-CHR7uPbWrPn@castor.db.elephantsql.com:5432/miwsxyxa"
 
@@ -94,6 +94,14 @@ def insert(table, form):
                     names.append("liczba_miejsc")
                     values.append("'" + str(liczba) + "'")
 
+                if table=="Rezerwacja":
+                    names.append('id_osoba')
+                    values.append("'"+str(session['id'])+"'")
+                    print(values)
+                    print(names)
+
+                print(values)
+                print(names)
                 names = ",".join(names)
                 values = ",".join(values)
                 cursor.execute(f"INSERT INTO {table}({names}) VALUES ({values});")
@@ -116,17 +124,6 @@ def Forms_tuple():
         "Seans": seans(),
         "Osoba": rejestracja(),
         "Rezerwacja": rezerwacja(),
-        # "wyrok":wyrok(),
-        # "wyrok_wieznia":wyrok_wieznia(),
-        # "wiezien":wiezien(),
-        # "praca_wieznia":praca_wieznia(),
-        # "praca":praca(),
-        # "cela":cela(),
-        # "blok":blok(),
-        # "pomieszczenie":pomieszczenie(),
-        # "pracownik":pracownik(),
-        # "zmiana":(),
-        # "zawod":zawod(),
     }
     return Forms
 
@@ -156,21 +153,13 @@ def handling_forms(form, form_name):
         form.id_film.choices = [(row[0], f"{row[4]}") for row in tmp]
 
 def rezerwuj(form, id):
-    tmp = myselect("Select id_seans, tytul, data, godzina, cena FROM Seans JOIN Film ON film.id_film = Seans.id_film WHERE id_kino = "+id+";")
+    tmp = myselect("SELECT * FROM seans("+id+");")
     form.id_seans.choices = [(row[0], f"{row[1]} DATA: {row[2]} GODZINA: {row[3]} CENA: {row[4]}zł") for row in tmp]
-    tmp = myselect("SELECT * FROM Osoba ;")
-    form.id_osoba.choices = [(row[0], f"{row[1]}") for row in tmp]
-    tmp = myselect("SELECT * FROM Bilet ;")
+    tmp = select_all("Bilet")
     form.id_bilet.choices = [(row[0], f"{row[1]}") for row in tmp]
-    tmp = tmp = myselect("Select id_napoje,nazwa FROM Napoje WHERE id_kino= "+id+";")
+    tmp = myselect("Select * FROM rez_napoje("+id+");")
     form.id_napoje.choices = [(row[0], f"{row[1]}") for row in tmp]
-    tmp = tmp = myselect("Select id_przekaski,nazwa FROM Przekaski WHERE id_kino= " + id + ";")
+    form.id_napoje.choices.insert(0, (0, 'Brak'))
+    tmp = myselect("Select * FROM rez_przekaski("+id+");")
     form.id_przekaski.choices = [(row[0], f"{row[1]}") for row in tmp]
-
-
-
-
-
-
-
-        
+    form.id_przekaski.choices.insert(0, (0, 'Brak'))
