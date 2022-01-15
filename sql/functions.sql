@@ -56,7 +56,7 @@ BEGIN
         THEN RAISE EXCEPTION 'niepoprawny czas trwania (<0)';
     END IF;
     IF  NEW.ocena<0
-        THEN RAISE EXCEPTION 'niepoprawna wratość oceny (<0)';
+        THEN RAISE EXCEPTION 'niepoprawna wartość oceny (<0)';
     END IF;
     IF  NEW.ocena>10
         THEN RAISE EXCEPTION 'niepoprawna wratość oceny (>10)';
