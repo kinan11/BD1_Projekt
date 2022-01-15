@@ -2,3 +2,4 @@ Flask==1.1.2
 psycopg2==2.8.4
 WTForms==2.3.3
 Flask-WTF==0.14.3
+gunicorn==19.9.0
