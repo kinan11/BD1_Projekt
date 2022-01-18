@@ -2,7 +2,7 @@
 CREATE OR REPLACE VIEW wszystkie_filmy AS SELECT tytul, imie||' '||nazwisko, rok, czas, ocena, COUNT (id_seans) FROM Film LEFT JOIN seans ON film.id_film  = seans.id_film  JOIN Rezyser ON Film.id_rezyser=Rezyser.id_rezyser GROUP BY tytul, rok, imie, nazwisko, czas, ocena;
 
 ------ LISTA KIN ------
-CREATE OR REPLACE VIEW lista_kin AS (WITH sum_sala AS ( SELECT Kino.id_kino, COUNT (id_sala) AS suma FROM Kino JOIN Sala ON Kino.id_kino=Sala.id_kino GROUP BY Kino.id_kino) SELECT nazwa, miasto ,suma, COUNT (Film.id_film) FROM  sum_sala JOIN Kino ON Kino.id_kino = sum_sala.id_kino RIGHT JOIN Seans ON Seans.id_kino  = Kino.id_kino JOIN Film ON Film.id_film = Seans.id_film GROUP BY nazwa, miasto, suma);
+CREATE OR REPLACE VIEW lista_kin AS (WITH sum_sala AS ( SELECT Kino.id_kino, COUNT (id_sala) AS suma FROM Kino JOIN Sala ON Kino.id_kino=Sala.id_kino GROUP BY Kino.id_kino) SELECT nazwa, miasto ,suma, COUNT (seans.id_kino) FROM sum_sala JOIN Kino ON Kino.id_kino = sum_sala.id_kino LEFT JOIN Seans ON Kino.id_kino  = Seans.id_kino GROUP BY nazwa, miasto, suma);
 
 ---- LISTA KIN DO FORMULARZY ---------
 CREATE OR REPLACE VIEW form_kino AS SELECT id_kino, nazwa,miasto FROM Kino;

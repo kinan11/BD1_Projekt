@@ -179,7 +179,7 @@ $$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER tr_dodaj_seans
-BEFORE INSERT OR UPDATE ON Seans
+BEFORE INSERT ON Seans
 FOR EACH ROW EXECUTE PROCEDURE dodaj_seans();
 
 -------------- REJESTRACJA -------------------------------------------
@@ -259,14 +259,3 @@ CREATE TRIGGER tr_rezerwacja
 BEFORE INSERT OR UPDATE ON Rezerwacja
 FOR EACH ROW EXECUTE PROCEDURE rezerwacja();
 
-
-
-----------------------------------------------------------
-WITH filmy_czas AS (WITH filmy AS(SELECT czas, godzina FROM Seans JOIN Film ON Seans.id_film = Film.id_film WHERE id_sala = NEW.id_sala AND data = NEW.data) SELECT czas, godzina FROM filmy WHERE godzina <NEW.godzina) SELECT czas FROM filmy_czas WHERE NEW.godzina BETWEEN godzina AND godzina+ MINUTES(czas)
-SELECT (TIME '12:00:00', INTERVAL '10 minutes') OVERLAPS (TIME '12:03:00', INTERVAL '10 minutes');
-
-
-
-UPDATE Seans SET godzina_koniec = ((SELECT godzina from seans where id_seans = 5) + (SELECT czas from seans Join film USING (id_film) WHERE id_seans = 5)*interval '1 minutes') WHERE id_seans = 5;
-
-WITH godz AS (SELECT tytul, godzina, czas FROM Seans JOIN Film USING (id_film) WHERE data = '2022-06-06' AND id_sala = 1) SELECT tytul, czas from godz WHERE (godzina, czas * interval '1 minutes') OVERLAPS (time '18:00:00', 150 * interval '1 minutes')

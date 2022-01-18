@@ -2,29 +2,29 @@
 <head>
     {% block head %}
     <meta charset="UTF-8">
-    <title>Kinga Miszczak Projekt</title>
+    <title>Kino</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
     {% endblock %}
 </head>
 <body>
     <nav>
-        <h1>Kinga Miszczak - Projekt</h1>
+        <h1>Kino online</h1>
         <ul>
             {% block links %}
 
             <li><a href="{{ url_for('data') }}">Informacje</a>
             <li><a href="{{ url_for('repertuar') }}">Repertuar</a>
-            {% if session['username']=='admin' %}
+            {% if session.name =='admin' %}
             <li><a href="{{ url_for('add', form_name='none') }}">Dodaj</a>
             {% endif %}
-            {% if not session['username'] %}
+            {% if not session.name %}
             <li><a href="{{ url_for('login') }}">Zaloguj się</a>
             {% endif %}
-            {% if session['username'] and session['username']!='admin'%}
+            {% if session.name and session.name !='admin'%}
             <li><a href="{{ url_for('rezerwacja') }}">Rezerwuj bilet</a>
             <li><a href="{{ url_for('bilet') }}">Moje rezerwacje</a>
                 {% endif %}
-                {% if session['username'] %}
+                {% if session.name %}
             <li><a href="{{ url_for('wyloguj') }}">Wyloguj się</a>
                 {% endif %}
             {% endblock %}

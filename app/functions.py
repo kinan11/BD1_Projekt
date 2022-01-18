@@ -115,15 +115,15 @@ def insert(table, form):
 
 def Forms_tuple():
     Forms = {
-        "Napoje": napoje(),
-        "Przekaski": przekaski(),
-        "Rezyser":rezyser(),
-        "Film": film(),
-        "Sala":sala(),
-        "Kino": kino(),
-        "Seans": seans(),
-        "Osoba": rejestracja(),
-        "Rezerwacja": rezerwacja(),
+        "Napoje": Napoje(),
+        "Przekaski": Przekąski(),
+        "Rezyser":Reżyser(),
+        "Film": Film(),
+        "Sala":Sala(),
+        "Kino": Kino(),
+        "Seans": Seans(),
+        "Osoba": Rejestracja(),
+        "Rezerwacja": Rezerwacja(),
     }
     return Forms
 

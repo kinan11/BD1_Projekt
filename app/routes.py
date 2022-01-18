@@ -3,16 +3,21 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from app.form import *
+from flask_session import Session
 
 from app.form import *
 from app.functions import *
 DB_URL = "postgres://miwsxyxa:oeMo_2pOyETz6pJlzspi-CHR7uPbWrPn@castor.db.elephantsql.com:5432/miwsxyxa"
 
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
 @app.route('/')
 def index():
     if 'loggedin' in session:
         # User is loggedin show them the home page
-        return render_template('index.html', username=session['username'])
+        return render_template('index.html', username=session.get("name"))
     return render_template('index.html')
 
 #creating form to add row into the table "form_name"
@@ -30,9 +35,9 @@ def add(form_name):
     if form.is_submitted():
         pow=insert(form_name,form)
         if pow=='ok':
-            flash('Dodanie powiodło się!')
+            flash('Pomyślnie dodano!')
         else:
-            flash('Dodanie nie powiodło się: '+ str(pow).split('CONTEXT')[0])
+            flash('Wystapił bład: '+ str(pow).split('CONTEXT')[0])
         return redirect(url_for('index'))
 
     return render_template('form.html', form = form)
@@ -165,9 +170,10 @@ def login():
                     account = cursor.fetchone()
                     print(type(account))
                     if account[0]:
-                         session['loggedin'] = True
+                         #session['loggedin'] = True
                          session['id'] = account[0]
-                         session['username'] = account[1]
+                         #session['username'] = account[1]
+                         session["name"] = account[1]
                          return redirect(url_for('index'))
                     else:
                          flash('Incorrect username/password')
@@ -181,7 +187,8 @@ def login():
 
 @app.route('/wyloguj/')
 def wyloguj():
-    session.clear()
+    #session.clear()
+    session["name"] = None
     return redirect(url_for('index'))
 
 @app.route('/bilet', methods=["GET", "POST"])

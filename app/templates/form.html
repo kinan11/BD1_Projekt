@@ -2,12 +2,12 @@
 
 {% block header %}
     {% if form.__class__.__name__ not in ["select_table"]%}  
-        <h1>{% block title %}Dodawanie do tabeli: {{form.__class__.__name__}}{% endblock %}</h1>
+        <h1>{% block title %}{{form.__class__.__name__}}{% endblock %}</h1>
     {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if form.__class__.__name__ == "rezerwacja" %}
+    {% if form.__class__.__name__ == "Rezerwacja" %}
         <form method="POST" action="{{ url_for('rez') }}">
             {% for field in form %}
             {% if field.type != 'CSRFTokenField' and field.name != 'submit' %}
