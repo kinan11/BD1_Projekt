@@ -4,31 +4,36 @@
     <meta charset="UTF-8">
     <title>Kino</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css')}}">
+    <link
+      href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <!--<link rel="stylesheet" type="text/css" href="../static/style.css">-->
     {% endblock %}
 </head>
 <body>
+    <div id="container">
+        <h1 id="tyt">Kino online</h1>
     <nav>
-        <h1>Kino online</h1>
-        <ul>
+
             {% block links %}
 
-            <li><a href="{{ url_for('data') }}">Informacje</a>
-            <li><a href="{{ url_for('repertuar') }}">Repertuar</a>
+            <a href="{{ url_for('data') }}">Informacje</a>
+            <a href="{{ url_for('repertuar') }}">Repertuar</a>
             {% if session.name =='admin' %}
-            <li><a href="{{ url_for('add', form_name='none') }}">Dodaj</a>
+            <a href="{{ url_for('add', form_name='none') }}">Dodaj</a>
             {% endif %}
             {% if not session.name %}
-            <li><a href="{{ url_for('login') }}">Zaloguj się</a>
+            <a href="{{ url_for('login') }}">Zaloguj się</a>
             {% endif %}
             {% if session.name and session.name !='admin'%}
-            <li><a href="{{ url_for('rezerwacja') }}">Rezerwuj bilet</a>
-            <li><a href="{{ url_for('bilet') }}">Moje rezerwacje</a>
+            <a href="{{ url_for('rezerwacja') }}">Rezerwuj bilet</a>
+            <a href="{{ url_for('bilet') }}">Moje rezerwacje</a>
                 {% endif %}
                 {% if session.name %}
-            <li><a href="{{ url_for('wyloguj') }}">Wyloguj się</a>
+            <a href="{{ url_for('wyloguj') }}">Wyloguj się</a>
                 {% endif %}
             {% endblock %}
-        </ul>
     </nav>
     <section class="content">
         <header>
@@ -40,4 +45,5 @@
         {% endfor %}
         {% block content %}{% endblock %}
     </section>
+        </div>
 </body>

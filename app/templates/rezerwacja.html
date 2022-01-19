@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block content %}
+    <div class="wrapper">
     <form method="POST" action="{{ url_for('reg', function='1') }}">
         <select name = "sel_kino">
             {% for name in names %}
@@ -17,6 +18,5 @@
     {% for o in select %}
     <p>{{o}}</p>
     {% endfor %}
-
-
+</div>
 {% endblock %}

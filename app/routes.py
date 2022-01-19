@@ -20,7 +20,6 @@ def index():
         return render_template('index.html', username=session.get("name"))
     return render_template('index.html')
 
-#creating form to add row into the table "form_name"
 @app.route('/add/<form_name>', methods=["GET", "POST"])
 def add(form_name):
     Forms = Forms_tuple()
@@ -170,19 +169,17 @@ def login():
                     account = cursor.fetchone()
                     print(type(account))
                     if account[0]:
-                         #session['loggedin'] = True
                          session['id'] = account[0]
-                         #session['username'] = account[1]
                          session["name"] = account[1]
                          return redirect(url_for('index'))
                     else:
-                         flash('Incorrect username/password')
+                        flash('Niepoprawny login lub hasło')
         except (Exception, psycopg2.Error) as error:
             print("Error while fetching data from PostgreSQL", error)
+            flash('Niepoprawny login lub hasło')
         finally:
             conn.close()
             print("conn closed")
-
     return render_template('login.html')
 
 @app.route('/wyloguj/')
@@ -197,7 +194,7 @@ def bilet():
     show = False
     records = []
     names = ['Film','Kino','Data', 'Godzina', 'Przekaska', 'Napój', 'Bilet', 'Cena']
-    records = myselect("SELECT * FROM bilety(" +str(session['id'])+ ")")
+    records = myselect("SELECT * FROM bilety(" +str(session['id']) + ")")
     for i in range(len(records)):
         for j in range(len(records[i])):
             if not records[i][j]:

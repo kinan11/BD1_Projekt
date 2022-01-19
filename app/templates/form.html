@@ -7,7 +7,9 @@
 {% endblock %}
 
 {% block content %}
+<div class = "xxx">
     {% if form.__class__.__name__ == "Rezerwacja" %}
+
         <form method="POST" action="{{ url_for('rez') }}">
             {% for field in form %}
             {% if field.type != 'CSRFTokenField' and field.name != 'submit' %}
@@ -28,4 +30,5 @@
         {{ form.submit }}
     </form>
  {% endif %}
+    </div>
 {% endblock %}
